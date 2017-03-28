@@ -30,7 +30,7 @@ public class MainBOW {
 			Instances dataDevFiltered = null;
 			Instances testFiltered = null;
 			
-			// Obtenemos el filtro StringToWordVector que aplicaremos a los tres ficheros, obteniendo el mismo dicionario para los tres
+			// Obtenemos el filtro StringToWordVector que aplicaremos a los tres ficheros, obteniendo el mismo dicionario para los tres*
 			Filter filter = StringToVector.getStringToVector().getStringToVectorFilter(data);
 			
 			dataTrainFiltered = Filter.useFilter(data,filter);
