@@ -14,6 +14,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
 import weka.core.DenseInstance;
+import weka.core.Instance;
 import weka.core.Instances;
 
 public class GetARFF {
@@ -140,32 +141,36 @@ public class GetARFF {
 		PrintWriter pw = new PrintWriter(bw);
 		
 		int contador = 0;		
-		String linea = "", inicio="", resto="";		
+		String linea = "", inicio="", resto="";
+		int count=0;
 		while (entrada.hasNext()) {
 			linea = entrada.nextLine();
 			if (contador == 0) {
 				pw.println("@RELATION SMS");
+				pw.println();
 				pw.println("@ATTRIBUTE class {ham, spam}");
 				pw.println("@ATTRIBUTE Text STRING");
+				pw.println();
 				pw.println("@DATA");
 				contador++;
 			} else {
 				if (linea.length() > 4) {
-					inicio = linea.substring(0, 3);
+					inicio = linea.substring(0, 4);
 					inicio = inicio.replace("\t", "");
 					if(inicio.equals("ham")||inicio.equals("spam")){
-					resto = linea.substring(4, linea.length());
-					resto = resto.replace(":", "");
-					resto = resto.replace("-)", "");
-					resto = resto.replace(")", "");
-					resto = resto.replace(".", "");
-					resto = resto.replace("(", "");
-					resto = resto.replace("/", "");
-					resto = resto.replace("''", "");
-					resto = resto.replace("-", "");
-					pw.print(inicio + " " + resto + " ");
-					pw.println(" ");
-					pw.flush();
+						resto = linea.substring(4, linea.length());
+						resto = resto.replace(":", "");
+						resto = resto.replace("\t","");
+						resto = resto.replace("-)", "");
+						resto = resto.replace(")", "");
+						resto = resto.replace(".", "");
+						resto = resto.replace("(", "");
+						resto = resto.replace("/", "");
+						resto = resto.replace("''", "");
+						resto = resto.replace("-", "");
+						pw.println(inicio + ",'" + resto + "'");
+						//pw.println(" ");
+						pw.flush();
 					}
 					else{
 						resto = linea;
@@ -186,23 +191,24 @@ public class GetARFF {
 		}		
 		pw.close();
 		entrada.close();
+		br.close();
 		System.out.println("Terminado!!");
 	}
 	
-	public Instances createDataset(String directoryPath, String pClass) throws Exception {
+	public Instances createDataset(String directoryPath, String pClass,Instances pData) throws Exception {
 		 
 		System.out.println("directorio: "+directoryPath);  
-		Instances data = null;
+		Instances data=pData;
 	    File dir = new File(directoryPath);
 	    String[] files = dir.list();
 	    for (int i = 0; i < files.length; i++) {
 	      if (files[i].endsWith(".txt")) {
+	    	  
 	    try {
 	      double[] newInst = new double[2];
-	     
+
 	      newInst[0] = (double)data.attribute(0).indexOfValue(pClass);
-	      
-	      File txt = new File(directoryPath + File.separator + files[i]);
+	      File txt = new File(directoryPath + "/" + files[i]);
 	      InputStreamReader is;
 	      is = new InputStreamReader(new FileInputStream(txt));
 	      StringBuffer txtStr = new StringBuffer();
@@ -210,10 +216,11 @@ public class GetARFF {
 	      while ((c = is.read()) != -1) {
 	        txtStr.append((char)c);
 	      }
+	      is.close();
 	      newInst[1] = (double)data.attribute(1).addStringValue(txtStr.toString());
 	      data.add(new DenseInstance(1.0, newInst));
 	    } catch (Exception e) {
-	      System.err.println("failed to convert file: " + directoryPath + File.separator + files[i]);
+	      System.err.println("failed to convert file: " + directoryPath + "/" + files[i]);
 	    }
 	      }
 	    }
