@@ -101,8 +101,8 @@ public class NaiveBayesClassifier {
 		System.out.println("Starting Naive Bayes Evaluation");
 		System.out.println();
 		NaiveBayes clasificador = new NaiveBayes();
-		NaiveBayes clasificador1 = new NaiveBayes();
-		NaiveBayes clasificador2 = new NaiveBayes();
+		//NaiveBayes clasificador1 = new NaiveBayes();
+		//NaiveBayes clasificador2 = new NaiveBayes();
 		
 		String pSR=null;
 		String pDR=null;

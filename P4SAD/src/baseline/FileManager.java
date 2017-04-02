@@ -12,6 +12,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import weka.classifiers.bayes.NaiveBayes;
 //import weka.classifiers.functions.LibSVM;
 import weka.core.Instances;
 import weka.core.SerializationHelper;
@@ -155,19 +156,19 @@ public class FileManager {
 	 * Saves the trained model
 	 * @param pModel
 	 */
-//	public void SaveModel(LibSVM pModel){
-//		
-//		try {
-//			SerializationHelper.write(savePath+fileName, pModel);
-//			
-//			System.out.println("Model correctly saved at:");
-//			System.out.println(savePath+fileName);
-//			
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
+	public void SaveModel(NaiveBayes pModel){
+		
+		try {
+			SerializationHelper.write(savePath+fileName, pModel);
+			
+			System.out.println("Model correctly saved at:");
+			System.out.println(savePath+fileName);
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	
 	/**
