@@ -5,9 +5,11 @@ import java.util.Random;
 
 import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.NaiveBayes;
+import weka.classifiers.meta.FilteredClassifier;
 import weka.core.Attribute;
 import weka.core.Capabilities;
 import weka.core.Instances;
+import weka.filters.unsupervised.attribute.StringToWordVector;
 
 public class NaiveBayesClassifier {
 	
