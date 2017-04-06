@@ -1,25 +1,11 @@
 package baseline;
 
-import java.util.ArrayList;
-
-import baseline.filters.DiscretizeAttributes;
-import baseline.filters.NominalBinary;
-import baseline.filters.NormalizeAttributes;
-import baseline.filters.RandomizeInstances;
-import baseline.filters.SelectAttributes;
-import weka.classifiers.Evaluation;
 import weka.core.Instances;
-import weka.core.neighboursearch.BallTree;
-import weka.core.neighboursearch.CoverTree;
-import weka.core.neighboursearch.KDTree;
-import weka.core.neighboursearch.LinearNNSearch;
 
-public class Main {
+public class MainGetModel {
 
-	public static void main(String[] args) throws Exception{
-		
-
-		
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
 		boolean[] bestOptions= new boolean[2];
 		boolean[] bestNaiveOptions; 
 		bestOptions[0]=true;
@@ -29,7 +15,6 @@ public class Main {
 		
 		Instances trainData=manager.loadData(args[0]);
 		Instances devData=manager.loadData(args[1]);
-		Instances testData=manager.loadData(args[2]);
 		Instances joinedTrainDev = manager.joinTrainDev(trainData, devData);
 		
 		
@@ -61,25 +46,6 @@ public class Main {
 		System.out.println();
 		
 		nb.evaluateModel(trainData, devData, minorityClass, bestNaiveOptions);
-		//nb.evaluateModel(evaluateTrainData, evaluateDevData, minorityClass, bestNaiveOptions);
-		//nb.evaluateModel(joinedTrainDev, testData, minorityClass, bestNaiveOptions);
-		//nb.evaluateModel(filteredEvaluationData[0], filteredEvaluationData[1], minorityClass, bestNaiveOptions);
-		
-		System.out.println();
-		System.out.println("=================================================");
-		System.out.println("=================================================");
-		System.out.println("================TEST SECTION=====================");
-		System.out.println("=================================================");
-		System.out.println("=================================================");
-		System.out.println();
-		//Instances evaluationData= filteredEvaluationData[2];
-		//nb.predictClass(joinedTrainDev, testData, bestNaiveOptions);
-		//nb.predictClass(joinedTrainDev, evaluationData, bestNaiveOptions);
-		
 	}
-	
-}
-	
-	
-	
 
+}

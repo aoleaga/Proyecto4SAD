@@ -19,8 +19,6 @@ import weka.core.SerializationHelper;
 
 public class FileManager {
 	
-	private String savePath="";
-	private String fileName = "SVM_Model.mdl";
 	
 	private static FileManager myFileManager = null;
 	
@@ -102,7 +100,7 @@ public class FileManager {
 	 * @return Instances[] . Position 0 - The first half of the split
 	 *  data. Position 1 - The second half of the split data
 	 */
-	public Instances[] splitTrainDev(Instances pData,double  pTrainPercentaje){
+	public Instances[] splitTrainDev(Instances pData, double  pTrainPercentaje){
 		
 		if(pTrainPercentaje<0 || pTrainPercentaje>1)
 		{
@@ -157,12 +155,12 @@ public class FileManager {
 	 * @param pModel
 	 */
 	public void SaveModel(NaiveBayes pModel){
-		
+		String savePath = "C:/Users/"+System.getProperty("user.name")+"/Desktop/NB_Model.mdl";
 		try {
-			SerializationHelper.write(savePath+fileName, pModel);
+			SerializationHelper.write(savePath, pModel);
 			
 			System.out.println("Model correctly saved at:");
-			System.out.println(savePath+fileName);
+			System.out.println(savePath);
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -180,10 +178,10 @@ public class FileManager {
 	public void SaveResults(String pSummary1,String pDetails1,String pMatrix1,double pFmeasure,String pResultsName,String pAdditional){
 				
 		String usuario=System.getProperty("user.name");
-		File file =new File("C:/Users/"+usuario+"/Desktop/EvaluationBaseline.txt");
+		File file =new File("C:/Users/"+usuario+"/Desktop/"+pResultsName+".txt");
 		
 		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter("C:/Users/"+usuario+"/Desktop/EvaluationBaseline.txt"));
+			BufferedWriter bw = new BufferedWriter(new FileWriter("C:/Users/"+usuario+"/Desktop/"+pResultsName+".txt"));
 			PrintWriter wr = new PrintWriter(bw); 
 			wr.append(pAdditional);
 			wr.append(pSummary1);
@@ -198,43 +196,24 @@ public class FileManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-//		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-//		Date date = new Date();
-//		PrintWriter writer = null;
-//		
-//		try {
-//			
-//			writer = new PrintWriter("naiveBayes"+dateFormat.format(date)+"_"+pResultsName+".txt", "UTF-8");
-//			writer.println(pAdditional);
-//			writer.println(pSummary);
-//			writer.println("Fmeasure; "+ pFmeasure);
-//			writer.println(pMatrix);
-//			writer.close();
-//		
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (UnsupportedEncodingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
-		
 	}
 	
 	
 	//TEMP
 	
-	public void savePredictions(double[] predictions,String classifier)
+	public void savePredictions(String[] predictions,String classifier)
 	{
 		String usuario=System.getProperty("user.name");
 		File file =new File("C:/Users/"+usuario+"/Desktop/TestPredictionsBaseline.txt");
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter("C:/Users/"+usuario+"/Desktop/TestPredictionsBaseline.txt"));
 			PrintWriter wr = new PrintWriter(bw); 
+			wr.println("Test Predictions of the Baseline NaiveBayes");
+			wr.println();
+			wr.println("nº\tPrediction");
 			for(int i=0;i<predictions.length;i++){
-				wr.append(Double.toString(predictions[i]));
+				wr.println(i+1+"\t"+predictions[i]);
+				//wr.println(i+1+"\t"+Double.toString(predictions[i]));
 			}
 			wr.close();
 			bw.close();
@@ -243,35 +222,10 @@ public class FileManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-//		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-//		Date date = new Date();
-//		PrintWriter writer;
-//
-//			try {
-//				writer= new PrintWriter(savePath+"TestBaselinePredicitions");
-//				//writer = new PrintWriter(savePath+"_"+dateFormat.format(date)+"_"+classifier+"_predicitions.txt", "UTF-8");
-//				//writer = new PrintWriter(savePath+"_"+classifier+"_predicitions.txt", "UTF-8");
-//				for(int i=0;i<predictions.length;i++)
-//					writer.println(predictions[i]);
-//					
-//				writer.close();
-//			} catch (FileNotFoundException | UnsupportedEncodingException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}	
-//			System.out.println("Predictions saved at "+savePath+"_"+classifier+"_Predicitions.txt");
 	}
 	//END TEMP
 		
-	public void setFileName(String pFileName) {
-		fileName = pFileName;
-	}
 
-	public void setSavePath(String pSavePath) {
-		savePath = pSavePath;
-		
-	}
 	
 	public int getMinorityClass(Instances pData){
 		int minIndex = 0;
@@ -295,20 +249,33 @@ public class FileManager {
 			BufferedWriter bw = new BufferedWriter(new FileWriter("C:/Users/"+usuario+"/Desktop/EvaluationBaseline.txt"));
 			PrintWriter wr = new PrintWriter(bw); 
 			wr.append("10-fold crossvalidation");
+			wr.println();
 			wr.append(pS10);
+			wr.println();
 			wr.append("Fmeasure = "+pFmeasure1);
+			wr.println();
 			wr.append(pD10);
 			wr.append(pM10);
+			wr.println();
+			wr.println();
 			
 			wr.append("Rebsustitution error");
+			wr.println();
 			wr.append(pSR);
+			wr.println();
 			wr.append("Fmeasure = "+pFmeasure2);
+			wr.println();
 			wr.append(pDR);
 			wr.append(pMR);
+			wr.println();
+			wr.println();
 			
 			wr.append("Hold-Out");
+			wr.println();
 			wr.append(pSH);
+			wr.println();
 			wr.append("Fmeasure = "+pFmeasure3);
+			wr.println();
 			wr.append(pDH);
 			wr.append(pMH);
 			

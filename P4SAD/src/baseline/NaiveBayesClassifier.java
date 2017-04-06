@@ -3,6 +3,7 @@ package baseline;
 import java.util.ArrayList;
 import java.util.Random;
 
+import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.meta.FilteredClassifier;
@@ -82,7 +83,7 @@ public class NaiveBayesClassifier {
 			System.out.println(bestEvaluator.toSummaryString());
 			System.out.println(bestEvaluator.toClassDetailsString());
 			System.out.println(bestEvaluator.toMatrixString());
-			FileManager.getFileManager().SaveResults(bestEvaluator.toClassDetailsString(),bestEvaluator.toSummaryString(),bestEvaluator.toMatrixString(),bestEvaluator.fMeasure(pMinorityClass),"NaiveBayes_TrainResults","Use Kernel Estimator: " + bestOptions[0]+" "+"\nUse Supervised Discretization: "+bestOptions[1]);
+			FileManager.getFileManager().SaveResults(bestEvaluator.toClassDetailsString(),bestEvaluator.toSummaryString(),bestEvaluator.toMatrixString(),bestEvaluator.fMeasure(pMinorityClass),"NaiveBayes_ParameterSweep","Use Kernel Estimator: " + bestOptions[0]+" "+"\nUse Supervised Discretization: "+bestOptions[1]);
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -103,8 +104,8 @@ public class NaiveBayesClassifier {
 		System.out.println("Starting Naive Bayes Evaluation");
 		System.out.println();
 		NaiveBayes clasificador = new NaiveBayes();
-		//NaiveBayes clasificador1 = new NaiveBayes();
-		//NaiveBayes clasificador2 = new NaiveBayes();
+		Instances traindev = FileManager.getFileManager().joinTrainDev(pTrain, pTest);
+		Instances td[] =FileManager.getFileManager().splitTrainDev(traindev, 0.7);
 		
 		String pSR=null;
 		String pDR=null;
@@ -120,8 +121,8 @@ public class NaiveBayesClassifier {
 		double pFR=0.0;
 		
 		try {
-			Evaluation evaluador = new Evaluation(pTrain);
-			evaluador.crossValidateModel(clasificador, pTest, 10, new Random(42));
+			Evaluation evaluador = new Evaluation(traindev);
+			evaluador.crossValidateModel(clasificador, traindev, 10, new Random(42));
 			System.out.println("Results Evaluate Model 10-fold crossvaliadtion =====");
 			pS10=evaluador.toSummaryString();
 			pD10=evaluador.toClassDetailsString();
@@ -134,10 +135,10 @@ public class NaiveBayesClassifier {
 			
 			clasificador.setUseKernelEstimator(pBestOptions[0]);
 			clasificador.setUseSupervisedDiscretization(pBestOptions[1]);
-			clasificador.buildClassifier(pTrain);
+			clasificador.buildClassifier(traindev);
 			try {
-				Evaluation evaluador1 = new Evaluation(pTrain);
-				evaluador1.evaluateModel(clasificador, pTrain);
+				Evaluation evaluador1 = new Evaluation(traindev);
+				evaluador1.evaluateModel(clasificador, traindev);
 				System.out.println("Results Evaluate Model resubstitution error =====");
 				pSR=evaluador1.toSummaryString();
 				pDR=evaluador1.toClassDetailsString();
@@ -164,8 +165,8 @@ public class NaiveBayesClassifier {
 		
 		try {
 			//Show & Save results
-			Evaluation evaluador2 = new Evaluation(pTrain);
-			evaluador2.evaluateModel(clasificador, pTest);
+			Evaluation evaluador2 = new Evaluation(td[0]);
+			evaluador2.evaluateModel(clasificador, td[1]);
 			System.out.println("Results Evaluate Model Hold-Out =====");
 			pSH = evaluador2.toSummaryString();
 			pDH=evaluador2.toClassDetailsString();
@@ -180,6 +181,7 @@ public class NaiveBayesClassifier {
 			e.printStackTrace();
 		}
 		FileManager.getFileManager().SaveResults2(pS10,pD10,pM10,pSR,pDR,pMR,pSH,pDH,pMH,pF10,pFR,pFH,"NaiveBayes_EvaluationResults","");
+		FileManager.getFileManager().SaveModel(clasificador);
 	}
 	
 	
@@ -188,35 +190,39 @@ public class NaiveBayesClassifier {
 	 * @param pTrain
 	 * @param pTest
 	 * @param pBestOptions
+	 * @throws Exception 
 	 */
-	public void predictClass(Instances pTrain,Instances pTest,boolean[] pBestOptions){
+
+	
+public void predictClass(Instances pTrain,Instances pTest,String pathModel,boolean[] pBestOptions) throws Exception{
 		
-		NaiveBayes clasificador = new NaiveBayes();
+		//NaiveBayes clasificador = new NaiveBayes();
+		NaiveBayes clasificador = (NaiveBayes) weka.core.SerializationHelper.read(pathModel);
 		Evaluation evaluador = null;
 		System.out.println("Starting Naive Bayes Predictions");
 		try {
 			clasificador.setUseKernelEstimator(pBestOptions[0]);
 			clasificador.setUseSupervisedDiscretization(pBestOptions[1]);
-			//System.out.println(pTrain.numAttributes());
-			//System.out.println(pTrain.numInstances());
-			//System.out.println(pTest.numAttributes());
-			//System.out.println(pTest.numInstances());
-			//System.out.println(pTrain);
-			//System.out.println(pTest);
 			clasificador.buildClassifier(pTrain);
 			
 			evaluador = new Evaluation(pTrain);
-			System.out.println(pTrain.numAttributes());
-			System.out.println(pTrain.numInstances());
-			System.out.println(pTest.numAttributes());
-			System.out.println(pTest.numInstances());
+			System.out.println("Numero de atributos del conjunto train: "+pTrain.numAttributes());
+			System.out.println("Numero de instancias del conjunto train: "+pTrain.numInstances());
+			System.out.println("Numero de atributos del conjunto test: "+pTest.numAttributes());
+			System.out.println("Numero de instancias del conjunto test: "+pTest.numInstances());
 			evaluador.evaluateModel(clasificador, pTest);
-						
+			Instances unlabeled = pTest;
+			Instances labeled = pTest;
 			double predictions[] = new double[pTest.numInstances()];
+			double prediction = 0.0;
+			String pred[] = new String[pTest.numInstances()];
 			for (int i = 0; i < pTest.numInstances(); i++) {
-					predictions[i] = evaluador.evaluateModelOnceAndRecordPrediction(clasificador, pTest.instance(i));
+					prediction = evaluador.evaluateModelOnceAndRecordPrediction(clasificador, pTest.instance(i));
+					labeled.instance(i).setClassValue(prediction);
+					pred[i] = unlabeled.classAttribute().value((int) prediction);
+					//predictions[i] = evaluador.evaluateModelOnceAndRecordPrediction(clasificador, pTest.instance(i));
 			}
-			FileManager.getFileManager().savePredictions(predictions, "NaiveBayes");
+			FileManager.getFileManager().savePredictions(pred, "NaiveBayes");
 		} 
 		catch (Exception e) {
 			e.printStackTrace();

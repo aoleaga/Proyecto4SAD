@@ -55,10 +55,10 @@ public class MainGetARFF {
 			else{
 				File dir = new File(args[0]);
 				ArrayList<Attribute> atts = new ArrayList(2);
-	    	    ArrayList valores = new ArrayList(2);
-	    	    valores.add("pos");
-	    	    valores.add("neg");
-	    	    Attribute valor = new Attribute("class", valores);
+	    	    ArrayList clase = new ArrayList(2);
+	    	    clase.add("pos");
+	    	    clase.add("neg");
+	    	    Attribute valor = new Attribute("clase", clase);
 	    	    atts.add(valor);
 	    	    atts.add(new Attribute("contents", (java.util.List<String>)null));
 	    	    Instances data = new Instances("text_files_in_" + args[0], atts, 0);

@@ -42,7 +42,7 @@ public class GetARFF {
 						texto += "@RELATION tweets \n";
 						texto += "\n";
 						// texto += "@ATTRIBUTE " + data[0] + " STRING \n";
-						texto += "@ATTRIBUTE class {negative,positive} \n";
+						texto += "@ATTRIBUTE clase {negative,positive} \n";
 						// texto += "@ATTRIBUTE " + data[2] + " STRING \n";
 						// texto += "@ATTRIBUTE " + data[3] + " STRING \n";
 						texto += "@ATTRIBUTE " + data[4].replace("\"", "") + " STRING \n";
@@ -148,7 +148,7 @@ public class GetARFF {
 			if (contador == 0) {
 				pw.println("@RELATION SMS");
 				pw.println();
-				pw.println("@ATTRIBUTE class {ham, spam}");
+				pw.println("@ATTRIBUTE clase {ham, spam}");
 				pw.println("@ATTRIBUTE Text STRING");
 				pw.println();
 				pw.println("@DATA");
@@ -182,7 +182,7 @@ public class GetARFF {
 						resto = resto.replace("/", "");
 						resto = resto.replace("''", "");
 						resto = resto.replace("-", "");
-						pw.print(resto + " ");
+						pw.print("?,'"+resto + "'");
 						pw.println(" ");
 						pw.flush();
 					}
