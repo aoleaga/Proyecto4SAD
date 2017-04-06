@@ -19,7 +19,7 @@ public class MainGetModel {
 		
 		// Establecemos los parametros optimos obtenidos en el barrido
 		LogisticClassifier.getLogisticClassifier().setMaxIts(3);
-		LogisticClassifier.getLogisticClassifier().setRidge(0.00);
+		LogisticClassifier.getLogisticClassifier().setRidge(0.5);
 		
 		// Unimos los dos Datasets
 		Instances traindev = LogisticClassifier.getLogisticClassifier().mergeDataSets(train, dev);

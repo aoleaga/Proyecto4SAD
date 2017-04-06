@@ -23,8 +23,8 @@ public class Classifier {
 			Logistic estimador = new Logistic();
 			for(int its = -1; its < 10; its++){
 				System.out.println("............... MaxIts = " + its + " ................");
-					estimador.setMaxIts(-1);
-					estimador.setRidge(0.516);
+					estimador.setMaxIts(its);
+					estimador.setRidge(ridge);
 				
 					estimador.buildClassifier(train);
 		        
@@ -34,6 +34,10 @@ public class Classifier {
 			
 					// hay que usar el fmeasure de la clase minoritaria
 					System.out.println(evaluator.fMeasure(claseMin));
+					
+					System.out.println(evaluator.toSummaryString());
+					
+					System.out.println(evaluator.toClassDetailsString());
 
 					if(evaluator.fMeasure(0) > fMeasure){
 						fMeasure = evaluator.fMeasure(claseMin);

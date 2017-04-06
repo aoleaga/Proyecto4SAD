@@ -22,7 +22,8 @@ public class MainBarrrido {
 		dev.setClassIndex(clase);
 
 		Classifier classifier = new Classifier();
-		classifier.classifyAndGetBestFMeasure(train, dev);		
+		classifier.classifyAndGetBestFMeasure(train, dev);	
+	
 		}
 	}
 }
