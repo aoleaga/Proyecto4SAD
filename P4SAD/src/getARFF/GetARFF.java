@@ -204,23 +204,32 @@ public class GetARFF {
 	    for (int i = 0; i < files.length; i++) {
 	      if (files[i].endsWith(".txt")) {
 	    	  
-	    try {
-	      double[] newInst = new double[2];
-
-	      newInst[0] = (double)data.attribute(0).indexOfValue(pClass);
-	      File txt = new File(directoryPath + "/" + files[i]);
-	      InputStreamReader is;
-	      is = new InputStreamReader(new FileInputStream(txt));
-	      StringBuffer txtStr = new StringBuffer();
-	      int c;
-	      while ((c = is.read()) != -1) {
-	        txtStr.append((char)c);
-	      }
-	      is.close();
-	      newInst[1] = (double)data.attribute(1).addStringValue(txtStr.toString());
-	      data.add(new DenseInstance(1.0, newInst));
-	    } catch (Exception e) {
-	      System.err.println("failed to convert file: " + directoryPath + "/" + files[i]);
+	    	  try {
+	    		  
+	    		  double[] newInst = new double[2];
+	    		  newInst[0] = (double)data.attribute(0).indexOfValue(pClass);
+	    		  File txt = new File(directoryPath + "/" + files[i]);
+	    		  InputStreamReader is;
+	    		  is = new InputStreamReader(new FileInputStream(txt));
+	    		  StringBuffer txtStr = new StringBuffer();
+	    		  int c;
+	    		  while ((c = is.read()) != -1) {
+	    			  txtStr.append((char)c);
+	    		  }
+	    		  is.close();
+	    		  String tx = new String(txtStr);
+	    		  String tx1 = this.remove1(tx);
+	    		  String tx2 = GetARFF.utf8aAscil(tx1);
+	    		  tx2 = tx2.replaceAll("\\\'","'");
+	    		  tx2 = tx2.replaceAll("\n", "");
+	    		  tx2 = tx2.replaceAll("\\\"","");
+	    		  tx2 = tx2.replaceAll("\'", "");
+	    		  newInst[1] = (double)data.attribute(1).addStringValue(tx2);
+	      //newInst[1] = (double)data.attribute(1).addStringValue(txtStr.toString());
+	    		  data.add(new DenseInstance(1.0, newInst));
+	    		 
+	    	  } catch (Exception e) {
+	    		  System.err.println("failed to convert file: " + directoryPath + "/" + files[i]);
 	    }
 	      }
 	    }
